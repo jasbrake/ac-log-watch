@@ -1,6 +1,6 @@
 const Tail = require('always-tail')
 const fs = require('fs')
-const acLogExpressions = require('./regex-expressions')
+const acLogExpressions = require('./log-expressions')
 
 const config = require('./config')
 
