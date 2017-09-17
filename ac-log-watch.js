@@ -4,7 +4,7 @@ const acLogExpressions = require('./log-expressions')
 
 const config = require('./config')
 
-const loginStream = fs.createWriteStream(config.inputPath, { flags: 'a' })
+const outputStream = fs.createWriteStream(config.outputPath, { flags: 'a' })
 
 let bytesRead = null
 
@@ -22,11 +22,11 @@ tail.on('line', (line) => {
   bytesRead += getBytes(line) + 1 // we add 1 for the newline byte
   const logged = line.match(acLogExpressions.loggedIn)
   if (logged) {
-    loginStream.write(`${logged[3]}\t${logged[4]}\n`)
+    outputStream.write(`${logged[3]}\t${logged[4]}\n`)
   } else {
     const changed = line.match(acLogExpressions.changedName)
     if (changed) {
-      loginStream.write(`${changed[3]}\t${changed[5]}\n`)
+      outputStream.write(`${changed[3]}\t${changed[5]}\n`)
     }
   }
 })
@@ -48,7 +48,7 @@ function closeGracefully () {
   console.log('quitting...')
   savePosition(config.positionPath, bytesRead)
   tail.unwatch()
-  loginStream.end()
+  outputStream.end()
   console.log('Position saved')
   process.exit()
 }
